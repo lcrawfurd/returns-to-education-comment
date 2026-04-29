@@ -1,0 +1,25 @@
+# Stata artifacts
+*.log
+0
+
+# Internal / not for public release
+archive/
+Reviews/
+original/
+code/replication/
+
+# Generated outputs (reproducible from code; included selectively below)
+output/run_log.txt
+output/publication_bias_tests.png
+output/publication_bias_summary.csv
+
+# R local library (auto-installed by run.sh)
+.r_libs/
+
+# OS / editor
+.DS_Store
+__pycache__/
+*.pyc
+*.pyo
+.Rhistory
+.RData

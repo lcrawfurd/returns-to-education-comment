@@ -1,0 +1,24 @@
+{
+  "cn_normal_fit_actual": {
+    "mu_pct": 0.2,
+    "sigma_pct": 12.1,
+    "note": "CN published values"
+  },
+  "mle_normal_fit_actual": {
+    "mu_pct": 8.0,
+    "sigma_pct": 6.3,
+    "note": "MLE without truncation"
+  },
+  "simulation": {
+    "n_sim": 200,
+    "n_per_draw": 71,
+    "true_mean_pct": 6.0,
+    "true_sd_pct": 6.0,
+    "distribution": "lognormal",
+    "median_recovered_pct": 2.75,
+    "p10_recovered_pct": -9.05,
+    "p90_recovered_pct": 4.0,
+    "pct_below_3pct": 50.0,
+    "pct_below_0pct": 25.5
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "n_input": 71,
+  "n_collapsed": 48,
+  "direction": {
+    "puniform_side": "right",
+    "copas_left": true
+  },
+  "puniform": {
+    "est": 6.2444,
+    "se": null,
+    "ci_lb": null,
+    "ci_ub": null,
+    "tau2": 16.8214,
+    "pval_0": 1.5872e-34,
+    "pval_1": null
+  },
+  "copas": {
+    "te_random": 6.4611,
+    "te_adjust": 4.7984,
+    "se_adjust": 0.902,
+    "ci_lb_adjust": 3.0304,
+    "ci_ub_adjust": 6.5663,
+    "pval_adjust": 1.041e-07
+  },
+  "andrews_kasy": {
+    "est": 5.2789,
+    "se": 1.2043,
+    "ci_lb": 2.9186,
+    "ci_ub": 7.6393,
+    "pval": 0,
+    "weight_nonsig": 0.497,
+    "n_collapsed": 48
+  },
+  "rve_pet": {
+    "est": 3.9419,
+    "se": 1.0563,
+    "pval": 0.0009,
+    "n": 71
+  },
+  "rve_peese": {
+    "est": 5.3995,
+    "se": 0.8054,
+    "pval": 1.3511e-07
+  }
+}
