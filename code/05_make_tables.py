@@ -2,7 +2,7 @@
 """
 make_tables.py — Generate LaTeX tables from analysis outputs.
 
-Paper: "Standard Methods Find Returns of 5–7%:
+Paper: "Causal Returns to Education Are 5–7%, Not Zero:
         A Comment on Clark and Nielsen (2026)"
 Author: Lee Crawfurd
 

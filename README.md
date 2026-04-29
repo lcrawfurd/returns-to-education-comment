@@ -1,6 +1,6 @@
 # Replication Package
 
-**"Standard Methods Find Returns of 5–7%: A Comment on Clark and Nielsen (2026)"**  
+**"Causal Returns to Education Are 5–7%, Not Zero: A Comment on Clark and Nielsen (2026)"**  
 Lee Crawfurd
 
 ---
