@@ -2,7 +2,7 @@
 """
 make_tables.py — Generate LaTeX tables from analysis outputs.
 
-Paper: "Causal Returns to Education Are 5–7%, Not Zero:
+Paper: "Causal Returns to Education Remain Substantial After Correcting for Publication Bias:
         A Comment on Clark and Nielsen (2026)"
 Author: Lee Crawfurd
 

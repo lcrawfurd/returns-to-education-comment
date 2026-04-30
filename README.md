@@ -1,6 +1,6 @@
 # Replication Package
 
-**"Causal Returns to Education Are 5–7%, Not Zero: A Comment on Clark and Nielsen (2026)"**  
+**"Causal Returns to Education Remain Substantial After Correcting for Publication Bias: A Comment on Clark and Nielsen (2026)"**  
 Lee Crawfurd
 
 ---
