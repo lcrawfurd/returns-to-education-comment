@@ -286,7 +286,7 @@ def make_table2(stata, rj):
         (r"\caption{Publication-bias corrections applied to Clark and Nielsen's"
          r" (2026) replication data}"),
         r"\label{tab:summary}",
-        r"\small",
+        r"\footnotesize",
         r"\begin{tabular}{llcc}",
         r"\toprule",
         r"Method & Sample & Estimate [95\% CI] & $p$-value \\",

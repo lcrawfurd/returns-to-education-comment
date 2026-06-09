@@ -6,7 +6,7 @@ Simulation: show CN's truncated-normal procedure recovers a near-zero mean
 even when the true effect is 6% and there is no publication bias.
 
 Left panel: distribution of recovered mu across 200 simulated datasets
-Right panel: CN's Figure 7 reproduced — truncated-normal fit (using CN's
+Left panel: CN's Figure 9 reproduced — truncated-normal fit (using CN's
              reported mu=0.2, sigma=12.1) vs the unconstrained MLE normal
              (mu=8.0, sigma=6.3) which does not assume truncation.
 
@@ -106,29 +106,36 @@ print(f"  < 3%: {pct_below_3:.0f}%,  < 0%: {pct_below_0:.0f}%")
 # ---------------------------------------------------------------------------
 fig, axes = plt.subplots(1, 2, figsize=(11, 4.5))
 
-# Left: CN's Figure 7 — observed histogram + CN fit + MLE fit
+# Left: CN's Figure 9 — full observed histogram + CN fit + MLE fit
 ax2 = axes[0]
-edges, obs_counts, n_pos = make_bins(effects)
-bin_centres = (edges[:-1] + edges[1:]) / 2
 
-# CN's truncated-normal fit (their reported values)
+# Full histogram: include negative values (do NOT filter to positive only)
+all_eff   = effects[(effects > -25) & (effects < 40.1)]
+n_total   = len(all_eff)
+hist_edges   = np.arange(-22.5, 40 + BIN_WIDTH, BIN_WIDTH)
+hist_counts, _ = np.histogram(all_eff, bins=hist_edges)
+hist_centres   = (hist_edges[:-1] + hist_edges[1:]) / 2
+
+# CN truncated-normal fit — only valid over positive range (their assumption)
+pos_edges   = np.arange(0, 40 + BIN_WIDTH, BIN_WIDTH)
+pos_centres = (pos_edges[:-1] + pos_edges[1:]) / 2
 tn_cn = stats.truncnorm(a=-CN_MU/CN_SIGMA, b=np.inf, loc=CN_MU, scale=CN_SIGMA)
-exp_cn = np.diff(tn_cn.cdf(edges)) * n_pos
+exp_cn = np.diff(tn_cn.cdf(pos_edges)) * n_total
 
-# MLE normal fit to full data (no truncation assumption)
-norm_mle = stats.norm(loc=MLE_MU, scale=MLE_SIGMA)
-# Scale so total area under the plotted range = n_pos
-mle_probs = np.diff(norm_mle.cdf(edges))
-exp_mle   = mle_probs / mle_probs.sum() * n_pos
+# MLE normal — unconstrained, plotted over full displayed range
+norm_mle  = stats.norm(loc=MLE_MU, scale=MLE_SIGMA)
+total_prob = norm_mle.cdf(hist_edges[-1]) - norm_mle.cdf(hist_edges[0])
+exp_mle    = np.diff(norm_mle.cdf(hist_edges)) / total_prob * n_total
 
-ax2.bar(bin_centres, obs_counts, width=2.2, color="#AAAAAA", alpha=0.6, label="Observed")
-ax2.plot(bin_centres, exp_cn,  "o-", color="crimson",  linewidth=2, markersize=4,
+ax2.bar(hist_centres, hist_counts, width=2.2, color="#AAAAAA", alpha=0.6, label="Observed")
+ax2.plot(pos_centres, exp_cn,  "o-", color="crimson",  linewidth=2, markersize=4,
          label=f"CN fit: truncated normal ($\\hat{{\\mu}}=0.2\\%$)")
-ax2.plot(bin_centres, exp_mle, "s-", color="#2ca02c",  linewidth=2, markersize=4,
+ax2.plot(hist_centres, exp_mle, "s-", color="#2ca02c",  linewidth=2, markersize=4,
          label=f"MLE normal (no truncation, $\\hat{{\\mu}}=8.0\\%$)")
+ax2.axvline(0, color="black", linestyle="--", linewidth=0.8, alpha=0.5)
 ax2.set_xlabel("Return to schooling (%)", fontsize=11)
 ax2.set_ylabel("Count", fontsize=11)
-ax2.set_title("CN Figure 7: two interpretations of the same data", fontsize=11)
+ax2.set_title("CN Figure 9: two interpretations of the same data", fontsize=11)
 ax2.legend(fontsize=9, loc="upper right")
 ax2.spines[["top", "right"]].set_visible(False)
 
