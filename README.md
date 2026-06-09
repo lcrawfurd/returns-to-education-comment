@@ -87,7 +87,7 @@ Standard laptop. Estimated wall-clock time: **~6–8 minutes** (the p-uniform* b
 | `02_selection_models_r.R` | R | `data/_r_copas_puniform_input.csv`, `data/Returns_to_education.dta` | `output/r_pub_bias_results.json`, `output/copas_metasens_plot.png` | p-uniform* (bootstrap CI), Copas, Andrews–Kasy selection models; cluster-robust RVE PET/PEESE via `robumeta`. |
 | `03_make_figures.py` | Python | `data/Returns_to_education.dta` | `output/figures/fig1_funnel.pdf`, `fig2_petpeese.pdf`, `fig4_tstats.pdf`, `fig5_normality.pdf` | Funnel plot, PET-PEESE scatter, t-stat distribution, normality figure. |
 | `04_cn_simulation.py` | Python | `data/Returns_to_education.dta` | `output/figures/fig6_simulation.pdf`, `output/cn_simulation_results.json` | Simulation showing CN's normal-fitting procedure is biased toward zero; comparison of CN fit vs MLE normal and log-normal. |
-| `05_make_tables.py` | Python | `output/stata_pub_bias_summary.csv`, `output/r_pub_bias_results.json` | `output/tables/table2_summary.tex` | Reads Stata and R output files; formats and writes the LaTeX summary table. |
+| `05_make_tables.py` | Python | `output/stata_pub_bias_summary.csv`, `output/r_pub_bias_results.json` | `output/tables/table1_summary.tex` | Reads Stata and R output files; formats and writes the LaTeX summary table. |
 | `additional_pub_bias_tests.py` | Python | `data/Returns_to_education.dta` | `output/publication_bias_tests.png`, `output/publication_bias_summary.csv` | Extended battery of publication-bias tests (diagnostic only; not used in paper). **Not run by `run.sh`**. |
 
 ### Original CN code (reference only)
@@ -128,7 +128,7 @@ Stata's `-b` (batch) flag writes a log named `blog-other-methods-stata.log` to t
 | Figure 4 (t-stats) | `03_make_figures.py` | `output/figures/fig4_tstats.pdf` |
 | Figure 5 (normality) | `03_make_figures.py` | `output/figures/fig5_normality.pdf` |
 | Figure 6 (simulation) | `04_cn_simulation.py` | `output/figures/fig6_simulation.pdf` |
-| Table 2 (summary of all methods) | `05_make_tables.py` ← `01_pub_bias_stata.do` + `02_selection_models_r.R` | `output/tables/table2_summary.tex` |
+| Table 1 (summary of all methods) | `05_make_tables.py` ← `01_pub_bias_stata.do` + `02_selection_models_r.R` | `output/tables/table1_summary.tex` |
 | In-text: Egger intercept −0.38 | `01_pub_bias_stata.do` | `output/stata_pub_bias_summary.csv` |
 | In-text: PET 6.4%, PEESE 6.1% | `01_pub_bias_stata.do` | `output/stata_pub_bias_summary.csv` |
 | In-text: trim-and-fill 6.2% | `01_pub_bias_stata.do` | `output/stata_pub_bias_summary.csv` |

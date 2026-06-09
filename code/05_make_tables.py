@@ -11,7 +11,7 @@ Reads:
   ../output/r_pub_bias_results.json       (from r_copas_puniform_methods.R)
 
 Writes:
-  ../output/tables/table2_summary.tex
+  ../output/tables/table1_summary.tex
 
 Run from project root: python3 code/make_tables.py
 Or via run.sh (Step 3c).
@@ -82,19 +82,6 @@ def pval_from_z(est, se):
     return 2.0 * _norm_sf(abs(est / se))
 
 
-def stars(pval):
-    """Significance stars (economics convention): *** p<0.01, ** p<0.05, * p<0.10."""
-    if pval is None:
-        return ""
-    if pval < 0.01:
-        return "^{***}"
-    if pval < 0.05:
-        return "^{**}"
-    if pval < 0.10:
-        return "^{*}"
-    return ""
-
-
 def fmt_pval(pval):
     """Format a p-value for a table cell (already in math mode context)."""
     if pval is None:
@@ -118,16 +105,6 @@ def fmt_ci(lb, ub, d=1):
     return f"[${lb:.{d}f}\\%$, ${ub:.{d}f}\\%$]"
 
 
-def fmt_est_se(est, se, pval=None, d=1):
-    """Format '$est^{stars}$~$(se)$' for Table 2 style cells."""
-    if est is None:
-        return "---"
-    star_str = stars(pval)
-    if se is None:
-        return f"${est:.{d}f}{star_str}$"
-    return f"${est:.{d}f}{star_str}$~$({se:.{d}f})$"
-
-
 # ---------------------------------------------------------------------------
 # Convenience: look up a field from the Stata dict
 # ---------------------------------------------------------------------------
@@ -138,10 +115,10 @@ def st(stata, key, field="estimate"):
 
 
 # ===========================================================================
-# Table 2 — Summary of all publication-bias corrections
+# Table 1 — Summary of all publication-bias corrections
 # ===========================================================================
 
-def make_table2(stata, rj):
+def make_table1(stata, rj):
     n_input     = rj.get("n_input", 71)
     n_collapsed = rj.get("n_collapsed", 48)
 
@@ -277,7 +254,7 @@ def make_table2(stata, rj):
         r" and normal-distribution fit (their Fig.~9)."
         r" $^{\dag}$ Egger intercept is a dimensionless $t$-statistic (expected $t$-value"
         r" as precision $\to 0$), not a bias-corrected return in percentage points."
-        r" `---' denotes no analytic $p$-value. *** $p<0.01$, ** $p<0.05$, * $p<0.10$."
+        r" `---' denotes no analytic $p$-value."
     )
 
     return "\n".join([
@@ -349,7 +326,7 @@ def main():
     rj    = load_r_json(R_JSON)
 
     tables = {
-        "table2_summary.tex": make_table2(stata, rj),
+        "table1_summary.tex": make_table1(stata, rj),
     }
 
     for fname, content in tables.items():
