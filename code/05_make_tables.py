@@ -296,10 +296,8 @@ def make_table1(stata, rj):
                 r"$n=65$", pet_cn, pet_cn_pv),
         pct_row(r"PEESE ($\mathrm{SE}<10.1\%$)         ",
                 r"$n=65$", peese_cn, peese_cn_pv),
-        # CN's Figure 7 = scatter, OLS intercept ~3% (unweighted, n=65)
-        r"  OLS at $\mathrm{SE}=0$ (Fig.\ 7, unweighted) & $n=65$ & $\sim 3\%$ & --- \\",
-        # CN's Figure 9 = histogram vs normal centred at 0 → 0.2% headline
-        r"  Normal-distribution fit (Fig.\ 9)             & $n=65$ & $0.2\%$    & --- \\",
+        r"  OLS at $\mathrm{SE}=0$ (unweighted)              & $n=65$ & $\sim 3\%$ & --- \\",
+        r"  Normal-distribution fit                         & $n=65$ & $0.2\%$    & --- \\",
         r"\bottomrule",
         r"\end{tabular}",
         "",
