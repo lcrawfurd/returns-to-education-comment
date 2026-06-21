@@ -257,49 +257,16 @@ def make_table1(stata, rj, mr):
     notes = (
         r"\footnotesize \textit{Notes:} Bias-corrected returns to one additional year"
         r" of schooling (percentage points), applied to Clark and Nielsen's (2026) data."
-        r" Panel~A uses fixed-effect inverse-variance weighting; first two rows are"
-        r" uncorrected baselines. WAAP includes only the"
-        f" {n_waap} estimates with SE~$\\leq {waap_thresh:.2f}\\%$"
-        r" (80\%-power threshold). Panel~A$^\prime$ uses RE-REML weighting."
-        r" Panel~A$^{\prime\prime}$ clusters SEs at the paper level"
-        f" ($n={n_collapsed}$ clusters, CR2 correction; \\citealt{{Hedges2010}})."
-        r" Panel~A$^{\prime\prime\prime}$ applies MAIVE \citep{Irsova2025}, which"
-        r" instruments reported precision with sample size to guard against spurious"
-        f" precision; the first-stage $F = {maive_F:.0f}$ indicates a strong instrument"
-        r" (R package \texttt{MAIVE}). The default (unweighted) and inverse-variance-weighted"
-        r" variants bracket the weighting choice; instrumenting raises the weighted"
-        r" estimate, so the reduction under the default reflects unweighting, not"
-        r" spurious precision."
-        r" Panel~B applies selection / significance-based models to study-collapsed estimates"
-        f" ($n={n_collapsed}$): p-uniform* \\citep{{vanAert2021}},"
-        r" Copas \citep{Copas2001}, Andrews--Kasy \citep{AndrewsKasy2019}, and"
-        r" multiple-bias meta-analysis \citep{Mathur2024} at the selection intensity"
-        r" implied by Andrews--Kasy ($\eta \approx 2$)"
-        r" (R packages \texttt{puniform}, \texttt{metasens}, \texttt{weightr},"
-        r" \texttt{multibiasmeta})."
-        r" p-uniform* CI not available (bootstrap non-convergence with extreme"
-        r" heterogeneity). Andrews--Kasy assumes 5\%-significance-based selection;"
-        f" $\\hat{{\\omega}} = {ak_w_str}$ indicates {ak_sel_label}."
-        r" Worst-case bounds (which assume the within-study $p$-hacking the caliper"
-        r" test does not detect): right-truncated meta-analysis"
-        f" (RTMA, \\texttt{{phacking}}) gives a corrected mean near {rtma_lo:.0f}--{rtma_hi:.0f}\\%"
-        r" (credible interval excludes zero), and multiple-bias under extreme selection"
-        f" ($\\eta=200$) gives {mb_extreme.get('est', 1.4):.1f}\\%."
-        r" Panel~C reproduces CN's own estimates: PET-PEESE on their replication"
-        r" do-file sample ($\mathrm{SE}<10.1\%$), OLS extrapolation, and"
-        r" normal-distribution fit."
-        r" Samples differ by method as each method's assumptions require"
-        r" (column~2); no estimate is dropped as an outlier from any row, the only"
-        r" outlier exclusions in the paper being presentational, in the funnel and"
-        r" histogram figures."
-        r" $^{\dag}$ Egger intercept is a dimensionless $t$-statistic (expected $t$-value"
-        r" as precision $\to 0$), not a bias-corrected return in percentage points."
-        r" $^{\ddag}$ PET is the precision-effect significance test; it rejects a zero"
-        r" effect in every specification here ($p<0.001$), so under the PET--PEESE"
-        r" decision rule the reported bias-corrected estimate is the PEESE intercept"
-        r" (6.1\%, 5.0\%, and 5.4\% under FE, RE, and RVE weighting). The PET"
-        r" intercept is shown for completeness, not as a separate estimate."
-        r" `---' denotes no analytic $p$-value."
+        r" Each method and its citation is described in Section~\ref{sec:results};"
+        r" column~2 gives the sample for each."
+        r" No estimate is dropped as an outlier from any row; the only outlier exclusions"
+        r" are presentational (Figures~\ref{fig:funnel} and~\ref{fig:normality})."
+        r" For MAIVE the default is unweighted and the IV-weighted variant holds the"
+        r" weighting fixed, isolating the spurious-precision correction."
+        r" $^{\dag}$~Egger intercept is a dimensionless $t$-statistic, not a return."
+        r" $^{\ddag}$~PET is the precision-effect significance test; significant"
+        r" throughout ($p<0.001$), so under the PET--PEESE decision rule the reported"
+        r" estimate is the PEESE intercept. `---'~denotes no analytic $p$-value."
     )
 
     return "\n".join([
@@ -314,7 +281,6 @@ def make_table1(stata, rj, mr):
         r"Method & Sample & Estimate [95\% CI] & $p$-value \\",
         r"\midrule",
         r"\multicolumn{4}{l}{\textit{Panel A: Funnel-based methods (fixed-effect weighting)}} \\",
-        pct_row(r"Naive (unweighted) mean     ", sample_all,  naive,   None),
         pct_row(r"Fixed-effect weighted mean  ", sample_all,  fe_mean, None),
         pct_row(r"WAAP                        ", sample_waap, waap,    waap_pv),
         egger_bias_row,
@@ -323,18 +289,15 @@ def make_table1(stata, rj, mr):
         pct_row(r"Trim-and-fill               ", sample_all,  tf_val,  None),
         pct_row(r"Endogenous kink             ", sample_all,  ek_est,  ek_pval),
         r"\midrule",
-        r"\multicolumn{4}{l}{\textit{Panel A$^\prime$: Funnel-based methods (random-effects, REML)}} \\",
+        r"\multicolumn{4}{l}{\textit{Panel A$^\prime$: Funnel-based methods, heterogeneity-robust weighting}} \\",
         pct_row(r"Random-effects weighted mean", sample_all,  re_mean, re_mean_pv),
-        pct_row(r"RE PET intercept$^{\ddag}$", sample_all,  re_pet,  re_pet_pv),
-        pct_row(r"RE PEESE intercept          ", sample_all,  re_pe,   re_pe_pv),
-        het_line,
-        r"\multicolumn{4}{l}{\textit{Panel A$^{\prime\prime}$: Funnel-based methods (cluster-robust RVE)}} \\",
-        pct_row(r"RVE PET intercept$^{\ddag}$", sample_rve,  rve.get("est"),    rve.get("pval")),
+        pct_row(r"RE PEESE intercept (REML)   ", sample_all,  re_pe,   re_pe_pv),
         pct_row(r"RVE PEESE intercept         ", sample_rve,  rve_pe.get("est"), rve_pe.get("pval")),
+        het_line,
         r"\midrule",
-        r"\multicolumn{4}{l}{\textit{Panel A$^{\prime\prime\prime}$: Spurious-precision-robust (MAIVE; $N$ instruments precision)}} \\",
-        pct_row(r"MAIVE PET-PEESE (default, unweighted)", sample_maive, maive_default, None),
-        pct_row(r"MAIVE PET-PEESE (IV-weighted)        ", sample_maive, maive_ivw,     None),
+        r"\multicolumn{4}{l}{\textit{Panel A$^{\prime\prime}$: Spurious-precision-robust (MAIVE; $N$ instruments precision)}} \\",
+        f"  MAIVE PET-PEESE (default / IV-weighted) & {sample_maive} & "
+        f"{fmt_pct(maive_default)} / {fmt_pct(maive_ivw)} & --- \\\\",
         r"\midrule",
         r"\multicolumn{4}{l}{\textit{Panel B: Selection / significance-based models}} \\",
         pct_ci_row(r"$p$-uniform*                ", sample_sel, pu_est, pu_lb, pu_ub, pu_pv),
@@ -348,8 +311,6 @@ def make_table1(stata, rj, mr):
                 r"$n=65$", pet_cn, pet_cn_pv),
         pct_row(r"PEESE ($\mathrm{SE}<10.1\%$)         ",
                 r"$n=65$", peese_cn, peese_cn_pv),
-        r"  OLS at $\mathrm{SE}=0$ (unweighted)              & $n=65$ & $\sim 3\%$ & --- \\",
-        r"  Normal-distribution fit                         & $n=65$ & $\sim 0\%$ & --- \\",
         r"\bottomrule",
         r"\end{tabular}",
         "",
