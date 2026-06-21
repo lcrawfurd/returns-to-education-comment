@@ -72,5 +72,15 @@
     "mean": 5.7,
     "ci_lb": 0.4921,
     "ci_ub": 20.2825
+  },
+  "endogenous_kink": {
+    "n": 71,
+    "est": 6.1527,
+    "se": 0.4107,
+    "pval": 2.2348e-23,
+    "kink_se": 3.1392,
+    "slope": 1.4766,
+    "n_above_kink": 33,
+    "iters": 5
   }
 }

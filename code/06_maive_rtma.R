@@ -151,6 +151,34 @@ rtma_mu <- if (!is.null(rtma)) {
 } else list(mode = NA, median = NA, mean = NA, ci_lb = NA, ci_ub = NA)
 
 # ---------------------------------------------------------------------------
+# Endogenous kink (Bom & Rachinger 2019): the one funnel-based method from the
+# Irsova et al. (2024) menu not yet run. Publication selection inflates reported
+# effects only where an estimate at the true mean would be insignificant
+# (SE > |mu|/1.96); below that kink the effect-SE relation is flat. The kink
+# a = |mu|/1.96 is endogenous, so iterate WLS (1/SE^2 weights) on the 71
+# independent estimates until the intercept converges; it is the bias-corrected
+# estimate. Same FE weighting and sample as the headline PET-PEESE.
+# ---------------------------------------------------------------------------
+ek_dat <- raw %>%
+  filter(ind_est == 1, !is.na(effect_percentage), !is.na(se_percentage),
+         se_percentage > 0)
+ek_y  <- ek_dat$effect_percentage
+ek_se <- ek_dat$se_percentage
+ek_w  <- 1 / ek_se^2
+ek_zcrit <- 1.96
+ek_beta  <- sum(ek_w * ek_y) / sum(ek_w)        # initialise at FE weighted mean
+ek_iters <- NA_integer_
+for (i in seq_len(500)) {
+  a    <- abs(ek_beta) / ek_zcrit
+  bnew <- unname(coef(lm(ek_y ~ pmax(0, ek_se - a), weights = ek_w))[1])
+  ek_iters <- i
+  if (abs(bnew - ek_beta) < 1e-10) { ek_beta <- bnew; break }
+  ek_beta <- bnew
+}
+ek_a   <- abs(ek_beta) / ek_zcrit
+ek_co  <- summary(lm(ek_y ~ pmax(0, ek_se - ek_a), weights = ek_w))$coefficients
+
+# ---------------------------------------------------------------------------
 # Assemble and write.
 # ---------------------------------------------------------------------------
 result <- list(
@@ -170,7 +198,17 @@ result <- list(
     worst_case = list(est = mb_worst_row$estimate, ci_lb = mb_worst_row$ci_lower,
                       ci_ub = mb_worst_row$ci_upper, pval = mb_worst_row$p_value)
   ),
-  rtma = rtma_mu
+  rtma = rtma_mu,
+  endogenous_kink = list(
+    n            = length(ek_y),
+    est          = unname(ek_co[1, 1]),
+    se           = unname(ek_co[1, 2]),
+    pval         = unname(ek_co[1, 4]),
+    kink_se      = ek_a,
+    slope        = unname(ek_co[2, 1]),
+    n_above_kink = sum(ek_se > ek_a),
+    iters        = ek_iters
+  )
 )
 
 out_path <- file.path(project_root, "output", "maive_rtma_results.json")

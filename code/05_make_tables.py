@@ -137,6 +137,11 @@ def make_table1(stata, rj, mr):
     mb_worst = mb.get("worst_case", {}) or {}
     rtma_lo, rtma_hi = rtma.get("mode"), rtma.get("median")
 
+    # Endogenous kink (Bom & Rachinger 2019) — funnel-based, FE-weighted, n=71
+    ek      = mr.get("endogenous_kink", {}) or {}
+    ek_est  = ek.get("est")
+    ek_pval = ek.get("pval")
+
     # n_waap: stored as estimate in row "n_waap" by the Stata do-file
     n_waap_raw = st(stata, "n_waap")
     n_waap     = int(round(n_waap_raw)) if n_waap_raw is not None else 33
@@ -316,6 +321,7 @@ def make_table1(stata, rj, mr):
         pct_row(r"PET (= Egger slope)$^{\ddag}$", sample_all,  pet,     pet_pv),
         pct_row(r"PEESE                       ", sample_all,  peese,   peese_pv),
         pct_row(r"Trim-and-fill               ", sample_all,  tf_val,  None),
+        pct_row(r"Endogenous kink             ", sample_all,  ek_est,  ek_pval),
         r"\midrule",
         r"\multicolumn{4}{l}{\textit{Panel A$^\prime$: Funnel-based methods (random-effects, REML)}} \\",
         pct_row(r"Random-effects weighted mean", sample_all,  re_mean, re_mean_pv),
