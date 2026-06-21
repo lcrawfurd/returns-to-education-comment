@@ -289,6 +289,11 @@ def make_table1(stata, rj, mr):
         r" histogram figures."
         r" $^{\dag}$ Egger intercept is a dimensionless $t$-statistic (expected $t$-value"
         r" as precision $\to 0$), not a bias-corrected return in percentage points."
+        r" $^{\ddag}$ PET is the precision-effect significance test; it rejects a zero"
+        r" effect in every specification here ($p<0.001$), so under the PET--PEESE"
+        r" decision rule the reported bias-corrected estimate is the PEESE intercept"
+        r" (6.1\%, 5.0\%, and 5.4\% under FE, RE, and RVE weighting). The PET"
+        r" intercept is shown for completeness, not as a separate estimate."
         r" `---' denotes no analytic $p$-value."
     )
 
@@ -308,17 +313,17 @@ def make_table1(stata, rj, mr):
         pct_row(r"Fixed-effect weighted mean  ", sample_all,  fe_mean, None),
         pct_row(r"WAAP                        ", sample_waap, waap,    waap_pv),
         egger_bias_row,
-        pct_row(r"PET (= Egger slope)         ", sample_all,  pet,     pet_pv),
+        pct_row(r"PET (= Egger slope)$^{\ddag}$", sample_all,  pet,     pet_pv),
         pct_row(r"PEESE                       ", sample_all,  peese,   peese_pv),
         pct_row(r"Trim-and-fill               ", sample_all,  tf_val,  None),
         r"\midrule",
         r"\multicolumn{4}{l}{\textit{Panel A$^\prime$: Funnel-based methods (random-effects, REML)}} \\",
         pct_row(r"Random-effects weighted mean", sample_all,  re_mean, re_mean_pv),
-        pct_row(r"RE PET intercept            ", sample_all,  re_pet,  re_pet_pv),
+        pct_row(r"RE PET intercept$^{\ddag}$", sample_all,  re_pet,  re_pet_pv),
         pct_row(r"RE PEESE intercept          ", sample_all,  re_pe,   re_pe_pv),
         het_line,
         r"\multicolumn{4}{l}{\textit{Panel A$^{\prime\prime}$: Funnel-based methods (cluster-robust RVE)}} \\",
-        pct_row(r"RVE PET intercept           ", sample_rve,  rve.get("est"),    rve.get("pval")),
+        pct_row(r"RVE PET intercept$^{\ddag}$", sample_rve,  rve.get("est"),    rve.get("pval")),
         pct_row(r"RVE PEESE intercept         ", sample_rve,  rve_pe.get("est"), rve_pe.get("pval")),
         r"\midrule",
         r"\multicolumn{4}{l}{\textit{Panel A$^{\prime\prime\prime}$: Spurious-precision-robust (MAIVE; $N$ instruments precision)}} \\",
