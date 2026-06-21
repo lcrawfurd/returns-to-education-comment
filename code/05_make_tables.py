@@ -338,7 +338,7 @@ def make_table1(stata, rj, mr):
         pct_row(r"PEESE ($\mathrm{SE}<10.1\%$)         ",
                 r"$n=65$", peese_cn, peese_cn_pv),
         r"  OLS at $\mathrm{SE}=0$ (unweighted)              & $n=65$ & $\sim 3\%$ & --- \\",
-        r"  Normal-distribution fit                         & $n=65$ & $0.2\%$    & --- \\",
+        r"  Normal-distribution fit                         & $n=65$ & $\sim 0\%$ & --- \\",
         r"\bottomrule",
         r"\end{tabular}",
         "",
