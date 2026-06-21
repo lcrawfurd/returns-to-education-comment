@@ -129,9 +129,9 @@ exp_mle    = np.diff(norm_mle.cdf(hist_edges)) / total_prob * n_total
 
 ax2.bar(hist_centres, hist_counts, width=2.2, color="#AAAAAA", alpha=0.6, label="Observed")
 ax2.plot(pos_centres, exp_cn,  "o-", color="crimson",  linewidth=2, markersize=4,
-         label=f"CN fit: truncated normal ($\\hat{{\\mu}}=0.2\\%$)")
+         label=f"CN fit: truncated normal ($\\hat{{\\mu}}=0.2$%)")
 ax2.plot(hist_centres, exp_mle, "s-", color="#2ca02c",  linewidth=2, markersize=4,
-         label=f"MLE normal (no truncation, $\\hat{{\\mu}}=8.0\\%$)")
+         label=f"MLE normal (no truncation, $\\hat{{\\mu}}=8.0$%)")
 ax2.axvline(0, color="black", linestyle="--", linewidth=0.8, alpha=0.5)
 ax2.set_xlabel("Return to schooling (%)", fontsize=11)
 ax2.set_ylabel("Count", fontsize=11)

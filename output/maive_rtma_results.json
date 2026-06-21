@@ -1,0 +1,76 @@
+{
+  "maive": {
+    "n_estimates": 60,
+    "n_clusters": 41,
+    "first_stage_F": 28.395,
+    "petpeese_default_unweighted_instr": 2.61,
+    "petpeese_ivweighted_instr": 6.933,
+    "ar_ci_lb": -3.91,
+    "ar_ci_ub": 9.945,
+    "pet_grid": {
+      "w0_i0": 3.177,
+      "w0_i1": 2.61,
+      "w1_i0": 6.254,
+      "w1_i1": 6.933
+    },
+    "petpeese_grid": {
+      "w0_i0": 6.019,
+      "w0_i1": 2.61,
+      "w1_i0": 6.067,
+      "w1_i1": 6.933
+    }
+  },
+  "multibias": {
+    "n_studies": 48,
+    "curve": [
+      {
+        "eta": 1,
+        "est": 6.4611,
+        "ci_lb": 4.851,
+        "ci_ub": 8.0711,
+        "pval": 1.0988e-09
+      },
+      {
+        "eta": 2,
+        "est": 5.1712,
+        "ci_lb": 3.5146,
+        "ci_ub": 6.8279,
+        "pval": 1.3655e-06
+      },
+      {
+        "eta": 4,
+        "est": 3.8878,
+        "ci_lb": 2.2997,
+        "ci_ub": 5.4758,
+        "pval": 0.0001
+      },
+      {
+        "eta": 10,
+        "est": 2.6106,
+        "ci_lb": 1.2111,
+        "ci_ub": 4.01,
+        "pval": 0.0015
+      },
+      {
+        "eta": 200,
+        "est": 1.4149,
+        "ci_lb": 0.0935,
+        "ci_ub": 2.7363,
+        "pval": 0.0379
+      }
+    ],
+    "worst_case": {
+      "est": 0.6173,
+      "ci_lb": -0.557,
+      "ci_ub": 1.7917,
+      "pval": 0.2558
+    }
+  },
+  "rtma": {
+    "mode": 1.7392,
+    "median": 3.9161,
+    "mean": 5.7,
+    "ci_lb": 0.4921,
+    "ci_ub": 20.2825
+  }
+}

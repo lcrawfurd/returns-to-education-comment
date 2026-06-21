@@ -41,7 +41,7 @@ The analysis in this paper uses Clark and Nielsen's (2026) replication dataset, 
 |----------|---------|---------|
 | Stata (StataNow/MP) | 16+ (tested on 19.5) | PET-PEESE, Egger, trim-and-fill, RE meta-regression |
 | Python | 3.9+ (tested on 3.12) | Figures, CN simulation, LaTeX table generation |
-| R | 4.x (tested on 4.4) | p-uniform*, Copas, Andrews-Kasy selection models; RVE PET/PEESE |
+| R | 4.x (tested on 4.5) | p-uniform*, Copas, Andrews-Kasy selection models; RVE PET/PEESE; MAIVE; right-truncated and multiple-bias meta-analysis |
 
 ### Python packages (`requirements.txt`)
 
@@ -57,9 +57,9 @@ Install with: `pip install -r requirements.txt`
 
 ### R packages (`renv.lock`)
 
-Required: `dplyr`, `readr`, `jsonlite`, `meta`, `metasens`, `puniform`, `weightr`, `haven`, `robumeta`
+Required: `dplyr`, `readr`, `jsonlite`, `meta`, `metasens`, `puniform`, `weightr`, `haven`, `robumeta` (Steps 1–2), plus `MAIVE`, `multibiasmeta`, `phacking` (Step 3c). `phacking` fits right-truncated meta-analysis by Stan MCMC and pulls in `rstan`/`StanHeaders` (a C++ toolchain is required to build it).
 
-These are auto-installed to `.r_libs/` on first run. A `renv.lock` file documents the tested package versions. To restore the exact package environment:
+Install to `.r_libs/` once. A `renv.lock` file documents the tested package versions; to restore the exact environment:
 
 ```r
 renv::restore()
@@ -69,7 +69,8 @@ Or to install manually:
 
 ```r
 install.packages(c("dplyr","readr","jsonlite","meta","metasens",
-                   "puniform","weightr","haven","robumeta"))
+                   "puniform","weightr","haven","robumeta",
+                   "MAIVE","multibiasmeta","phacking"))
 ```
 
 ### Hardware and runtime
@@ -87,7 +88,8 @@ Standard laptop. Estimated wall-clock time: **~6–8 minutes** (the p-uniform* b
 | `02_selection_models_r.R` | R | `data/_r_copas_puniform_input.csv`, `data/Returns_to_education.dta` | `output/r_pub_bias_results.json`, `output/copas_metasens_plot.png` | p-uniform* (bootstrap CI), Copas, Andrews–Kasy selection models; cluster-robust RVE PET/PEESE via `robumeta`. |
 | `03_make_figures.py` | Python | `data/Returns_to_education.dta` | `output/figures/fig1_funnel.pdf`, `fig2_petpeese.pdf`, `fig4_tstats.pdf`, `fig5_normality.pdf` | Funnel plot, PET-PEESE scatter, t-stat distribution, normality figure. |
 | `04_cn_simulation.py` | Python | `data/Returns_to_education.dta` | `output/figures/fig6_simulation.pdf`, `output/cn_simulation_results.json` | Simulation showing CN's normal-fitting procedure is biased toward zero; comparison of CN fit vs MLE normal and log-normal. |
-| `05_make_tables.py` | Python | `output/stata_pub_bias_summary.csv`, `output/r_pub_bias_results.json` | `output/tables/table1_summary.tex` | Reads Stata and R output files; formats and writes the LaTeX summary table. |
+| `06_maive_rtma.R` | R | `data/Returns_to_education.dta` | `output/maive_rtma_results.json` | MAIVE (instruments reported SE with sample size; PET/PET-PEESE across weighting × instrument grid, first-stage F); multiple-bias meta-analysis across selection ratios; right-truncated meta-analysis (RTMA, Stan) as a worst-case p-hacking bound. |
+| `05_make_tables.py` | Python | `output/stata_pub_bias_summary.csv`, `output/r_pub_bias_results.json`, `output/maive_rtma_results.json` | `output/tables/table1_summary.tex` | Reads Stata and R output files; formats and writes the LaTeX summary table. |
 | `additional_pub_bias_tests.py` | Python | `data/Returns_to_education.dta` | `output/publication_bias_tests.png`, `output/publication_bias_summary.csv` | Extended battery of publication-bias tests (diagnostic only; not used in paper). **Not run by `run.sh`**. |
 
 ### Original CN code (reference only)
@@ -128,12 +130,15 @@ Stata's `-b` (batch) flag writes a log named `blog-other-methods-stata.log` to t
 | Figure 4 (t-stats) | `03_make_figures.py` | `output/figures/fig4_tstats.pdf` |
 | Figure 5 (normality) | `03_make_figures.py` | `output/figures/fig5_normality.pdf` |
 | Figure 6 (simulation) | `04_cn_simulation.py` | `output/figures/fig6_simulation.pdf` |
-| Table 1 (summary of all methods) | `05_make_tables.py` ← `01_pub_bias_stata.do` + `02_selection_models_r.R` | `output/tables/table1_summary.tex` |
+| Table 1 (summary of all methods) | `05_make_tables.py` ← `01_pub_bias_stata.do` + `02_selection_models_r.R` + `06_maive_rtma.R` | `output/tables/table1_summary.tex` |
 | In-text: Egger intercept −0.38 | `01_pub_bias_stata.do` | `output/stata_pub_bias_summary.csv` |
 | In-text: PET 6.4%, PEESE 6.1% | `01_pub_bias_stata.do` | `output/stata_pub_bias_summary.csv` |
 | In-text: trim-and-fill 6.2% | `01_pub_bias_stata.do` | `output/stata_pub_bias_summary.csv` |
 | In-text: p-uniform* 6.2% | `02_selection_models_r.R` | `output/r_pub_bias_results.json` |
 | In-text: Copas 4.8% | `02_selection_models_r.R` | `output/r_pub_bias_results.json` |
+| In-text: MAIVE F=28.4, default 2.6%, IV-weighted 6.9% | `06_maive_rtma.R` | `output/maive_rtma_results.json` |
+| In-text: multiple-bias 5.2% (η≈2), sensitivity curve | `06_maive_rtma.R` | `output/maive_rtma_results.json` |
+| In-text: RTMA worst-case ~2–4% | `06_maive_rtma.R` | `output/maive_rtma_results.json` |
 | In-text: RE I²=95.6% | `01_pub_bias_stata.do` | `output/stata_pub_bias_summary.csv` |
 | In-text: Shapiro-Wilk p<0.001 | `01_pub_bias_stata.do` | `output/stata_pub_bias_summary.log` |
 

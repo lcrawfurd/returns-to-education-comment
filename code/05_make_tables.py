@@ -26,6 +26,7 @@ import sys
 HERE    = pathlib.Path(__file__).resolve().parent.parent
 STATA_CSV = HERE / "output" / "stata_pub_bias_summary.csv"
 R_JSON    = HERE / "output" / "r_pub_bias_results.json"
+MAIVE_JSON = HERE / "output" / "maive_rtma_results.json"
 OUT_DIR   = HERE / "output" / "tables"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -118,9 +119,23 @@ def st(stata, key, field="estimate"):
 # Table 1 — Summary of all publication-bias corrections
 # ===========================================================================
 
-def make_table1(stata, rj):
+def make_table1(stata, rj, mr):
     n_input     = rj.get("n_input", 71)
     n_collapsed = rj.get("n_collapsed", 48)
+
+    # MAIVE (spurious-precision-robust) and Mathur multiple-bias / RTMA results
+    maive   = mr.get("maive", {}) or {}
+    mb      = mr.get("multibias", {}) or {}
+    rtma    = mr.get("rtma", {}) or {}
+    maive_n        = maive.get("n_estimates", 60)
+    maive_F        = maive.get("first_stage_F")
+    maive_default  = maive.get("petpeese_default_unweighted_instr")
+    maive_ivw      = maive.get("petpeese_ivweighted_instr")
+    # multiple-bias at eta=2 (the Andrews-Kasy-implied selection intensity)
+    mb_eta2 = next((r for r in (mb.get("curve") or []) if r.get("eta") == 2), {}) or {}
+    mb_extreme = next((r for r in (mb.get("curve") or []) if r.get("eta") == 200), {}) or {}
+    mb_worst = mb.get("worst_case", {}) or {}
+    rtma_lo, rtma_hi = rtma.get("mode"), rtma.get("median")
 
     # n_waap: stored as estimate in row "n_waap" by the Stata do-file
     n_waap_raw = st(stata, "n_waap")
@@ -218,6 +233,7 @@ def make_table1(stata, rj):
     sample_waap = f"Adequately powered ($n={n_waap}$)"
     sample_rve  = f"All ind.\\ est.\\ ($n={n_input}$, {n_collapsed} clusters)"
     sample_sel  = f"Collapsed by study ($n={n_collapsed}$)"
+    sample_maive = f"Est.\\ with $N$ ($n={maive_n}$)"
 
     # Egger intercept row — value is a t-stat, mark with dagger
     ei_est_str = f"${ei_est:.2f}$" if ei_est is not None else "---"
@@ -242,16 +258,31 @@ def make_table1(stata, rj):
         r" (80\%-power threshold). Panel~A$^\prime$ uses RE-REML weighting."
         r" Panel~A$^{\prime\prime}$ clusters SEs at the paper level"
         f" ($n={n_collapsed}$ clusters, CR2 correction; \\citealt{{Hedges2010}})."
-        r" Panel~B applies selection models to study-collapsed estimates"
+        r" Panel~A$^{\prime\prime\prime}$ applies MAIVE \citep{Irsova2025}, which"
+        r" instruments reported precision with sample size to guard against spurious"
+        f" precision; the first-stage $F = {maive_F:.0f}$ indicates a strong instrument"
+        r" (R package \texttt{MAIVE}). The default (unweighted) and inverse-variance-weighted"
+        r" variants bracket the weighting choice; instrumenting raises the weighted"
+        r" estimate, so the reduction under the default reflects unweighting, not"
+        r" spurious precision."
+        r" Panel~B applies selection / significance-based models to study-collapsed estimates"
         f" ($n={n_collapsed}$): p-uniform* \\citep{{vanAert2021}},"
-        r" Copas \citep{Copas2001}, and Andrews--Kasy \citep{AndrewsKasy2019}"
-        r" (R packages \texttt{puniform}, \texttt{metasens}, \texttt{weightr})."
+        r" Copas \citep{Copas2001}, Andrews--Kasy \citep{AndrewsKasy2019}, and"
+        r" multiple-bias meta-analysis \citep{Mathur2024} at the selection intensity"
+        r" implied by Andrews--Kasy ($\eta \approx 2$)"
+        r" (R packages \texttt{puniform}, \texttt{metasens}, \texttt{weightr},"
+        r" \texttt{multibiasmeta})."
         r" p-uniform* CI not available (bootstrap non-convergence with extreme"
         r" heterogeneity). Andrews--Kasy assumes 5\%-significance-based selection;"
         f" $\\hat{{\\omega}} = {ak_w_str}$ indicates {ak_sel_label}."
-        r" Panel~C reproduces CN's own estimates: PET-PEESE on their restricted sample"
-        r" ($\mathrm{SE}<10.1\%$, replication do-file), OLS extrapolation (their Fig.~7),"
-        r" and normal-distribution fit (their Fig.~9)."
+        r" Worst-case bounds (which assume the within-study $p$-hacking the caliper"
+        r" test does not detect): right-truncated meta-analysis"
+        f" (RTMA, \\texttt{{phacking}}) gives a corrected mean near {rtma_lo:.0f}--{rtma_hi:.0f}\\%"
+        r" (credible interval excludes zero), and multiple-bias under extreme selection"
+        f" ($\\eta=200$) gives {mb_extreme.get('est', 1.4):.1f}\\%."
+        r" Panel~C reproduces CN's own estimates: PET-PEESE on their replication"
+        r" do-file sample ($\mathrm{SE}<10.1\%$), OLS extrapolation, and"
+        r" normal-distribution fit."
         r" $^{\dag}$ Egger intercept is a dimensionless $t$-statistic (expected $t$-value"
         r" as precision $\to 0$), not a bias-corrected return in percentage points."
         r" `---' denotes no analytic $p$-value."
@@ -286,10 +317,16 @@ def make_table1(stata, rj):
         pct_row(r"RVE PET intercept           ", sample_rve,  rve.get("est"),    rve.get("pval")),
         pct_row(r"RVE PEESE intercept         ", sample_rve,  rve_pe.get("est"), rve_pe.get("pval")),
         r"\midrule",
-        r"\multicolumn{4}{l}{\textit{Panel B: Selection models}} \\",
+        r"\multicolumn{4}{l}{\textit{Panel A$^{\prime\prime\prime}$: Spurious-precision-robust (MAIVE; $N$ instruments precision)}} \\",
+        pct_row(r"MAIVE PET-PEESE (default, unweighted)", sample_maive, maive_default, None),
+        pct_row(r"MAIVE PET-PEESE (IV-weighted)        ", sample_maive, maive_ivw,     None),
+        r"\midrule",
+        r"\multicolumn{4}{l}{\textit{Panel B: Selection / significance-based models}} \\",
         pct_ci_row(r"$p$-uniform*                ", sample_sel, pu_est, pu_lb, pu_ub, pu_pv),
         pct_ci_row(r"Copas                       ", sample_sel, co_est, co_lb, co_ub, co_pv),
         pct_ci_row(r"Andrews--Kasy (Vevea--Hedges)", sample_sel, ak_est, ak_lb, ak_ub, ak_pv),
+        pct_ci_row(r"Multiple-bias ($\eta\approx2$)", sample_sel,
+                   mb_eta2.get("est"), mb_eta2.get("ci_lb"), mb_eta2.get("ci_ub"), mb_eta2.get("pval")),
         r"\midrule",
         r"\multicolumn{4}{l}{\textit{Panel C: Clark and Nielsen's own estimates}} \\",
         pct_row(r"PET ($\mathrm{SE}<10.1\%$)           ",
@@ -322,9 +359,10 @@ def main():
 
     stata = load_stata_csv(STATA_CSV)
     rj    = load_r_json(R_JSON)
+    mr    = load_r_json(MAIVE_JSON) if MAIVE_JSON.exists() else {}
 
     tables = {
-        "table1_summary.tex": make_table1(stata, rj),
+        "table1_summary.tex": make_table1(stata, rj, mr),
     }
 
     for fname, content in tables.items():

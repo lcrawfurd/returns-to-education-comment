@@ -45,10 +45,10 @@ for z, ls in [(1.96, "--"), (2.58, ":")]:
 ax.scatter(effect[mask], se[mask], s=28, alpha=0.75, color="steelblue",
            edgecolors="white", linewidth=0.5, zorder=5)
 ax.axvline(mean_w, color="black", lw=1, alpha=0.5,
-           label=f"Weighted mean ({mean_w:.1f}\\%)")
+           label=f"Weighted mean ({mean_w:.1f}%)")
 ax.axvline(0, color="gray", lw=0.5, alpha=0.4)
-ax.set_xlabel("Estimated return to a year of schooling (\\%)")
-ax.set_ylabel("Standard error (\\%)")
+ax.set_xlabel("Estimated return to a year of schooling (%)")
+ax.set_ylabel("Standard error (%)")
 ax.invert_yaxis()
 ax.legend(loc="lower left", frameon=False)
 fig.tight_layout()
@@ -66,12 +66,12 @@ ax.scatter(se, effect, s=28, alpha=0.75, color="steelblue",
            edgecolors="white", linewidth=0.5)
 xs = np.linspace(0, max(se) * 1.05, 100)
 ax.plot(xs, pet.params[0] + pet.params[1] * xs, color="firebrick", ls="--",
-        lw=2, label=f"PET: {pet.params[0]:.1f}\\%")
+        lw=2, label=f"PET: {pet.params[0]:.1f}%")
 ax.plot(xs, peese.params[0] + peese.params[1] * xs**2, color="darkgreen",
-        lw=2, label=f"PEESE: {peese.params[0]:.1f}\\%")
+        lw=2, label=f"PEESE: {peese.params[0]:.1f}%")
 ax.axhline(0, color="gray", lw=0.5, alpha=0.5)
-ax.set_xlabel("Standard error (\\%)")
-ax.set_ylabel("Estimated return (\\%)")
+ax.set_xlabel("Standard error (%)")
+ax.set_ylabel("Estimated return (%)")
 ax.legend(frameon=False)
 fig.tight_layout()
 fig.savefig(OUT / "fig2_petpeese.pdf")
@@ -103,7 +103,7 @@ ax.plot(xs, stats.norm.pdf(xs, mu, sigma), color="firebrick", lw=2,
 ax.plot(xs, stats.norm.pdf(xs, 0, sigma), color="gray", ls="--", lw=1.5,
         label=f"Normal at 0 ($\\sigma={sigma:.1f}$)")
 ax.axvline(0, color="gray", lw=0.5, alpha=0.5)
-ax.set_xlabel("Estimated return to a year of schooling (\\%)")
+ax.set_xlabel("Estimated return to a year of schooling (%)")
 ax.set_ylabel("Density")
 ax.legend(frameon=False)
 fig.tight_layout()
