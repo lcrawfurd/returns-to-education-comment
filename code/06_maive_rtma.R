@@ -2,8 +2,7 @@
 #
 # 06_maive_rtma.R — spurious-precision and p-hacking-robust estimators.
 #
-# Paper: "Causal Returns to Education Remain Substantial After Correcting for
-#         Publication Bias: A Comment on Clark and Nielsen (2026)"
+# Paper: "The Returns to Education: A Comment" (on Clark and Nielsen, 2026, Kyklos)
 # Author: Lee Crawfurd
 #
 # Added in response to a referee who noted that the funnel-based corrections all

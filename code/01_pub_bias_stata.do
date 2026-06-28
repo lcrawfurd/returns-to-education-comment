@@ -2,7 +2,7 @@
 * 01_pub_bias_stata.do
 *
 * Stata implementation of the publication-bias methods for:
-* "Causal Returns to Education Remain Substantial After Correcting for Publication Bias: A Comment on Clark and Nielsen (2026)"
+* "The Returns to Education: A Comment" (on Clark and Nielsen, 2026, Kyklos)
 *
 * Includes:
 * - Egger regression

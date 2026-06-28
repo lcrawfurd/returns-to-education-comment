@@ -2,8 +2,7 @@
 """
 make_tables.py — Generate LaTeX tables from analysis outputs.
 
-Paper: "Causal Returns to Education Remain Substantial After Correcting for Publication Bias:
-        A Comment on Clark and Nielsen (2026)"
+Paper: "The Returns to Education: A Comment" (on Clark and Nielsen, 2026, Kyklos)
 Author: Lee Crawfurd
 
 Reads:

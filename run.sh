@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # run.sh — master replication script for:
-#   "Causal Returns to Education Remain Substantial After Correcting for Publication Bias: A Comment on Clark and Nielsen (2026)"
+#   "The Returns to Education: A Comment" (on Clark and Nielsen, 2026, Kyklos)
 #   Author: Lee Crawfurd
 #
 # Requirements:

@@ -1,6 +1,7 @@
 # Replication Package
 
-**"Causal Returns to Education Remain Substantial After Correcting for Publication Bias: A Comment on Clark and Nielsen (2026)"**  
+**"The Returns to Education: A Comment"**  
+(a comment on Clark and Nielsen, 2026, *Kyklos*)  
 Lee Crawfurd
 
 ---
