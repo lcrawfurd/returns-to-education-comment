@@ -84,7 +84,7 @@ Standard laptop. Estimated wall-clock time: **~6–8 minutes** (the p-uniform* b
 | Script | Language | Inputs | Outputs | Purpose |
 |--------|----------|--------|---------|---------|
 | `run.sh` | Shell | — | — | **Master script.** Runs all steps in order. Edit `STATA=` on line 26 if needed. |
-| `01_pub_bias_stata.do` | Stata | `data/Returns_to_education.dta` | `output/stata_pub_bias_summary.{csv,log}`, `data/_r_copas_puniform_input.csv` | PET-PEESE (FE and REML RE), Egger test, trim-and-fill, WAAP, caliper tests, normality diagnostics. Also exports the 71-row CSV used by the R script in Step 2. |
+| `01_pub_bias_stata.do` | Stata | `data/Returns_to_education.dta` | `output/stata_pub_bias_summary.{csv,log}`, `data/_r_copas_puniform_input.csv` | PET-PEESE (FE and REML RE), Egger test, trim-and-fill, WAAP, caliper tests. Also exports the 71-row CSV used by the R script in Step 2. |
 | `02_selection_models_r.R` | R | `data/_r_copas_puniform_input.csv`, `data/Returns_to_education.dta` | `output/r_pub_bias_results.json`, `output/copas_metasens_plot.png` | p-uniform* (bootstrap CI), Copas, Andrews–Kasy selection models; cluster-robust RVE PET/PEESE via `robumeta`. |
 | `03_make_figures.py` | Python | `data/Returns_to_education.dta` | `output/figures/fig1_funnel.pdf`, `fig2_petpeese.pdf`, `fig4_tstats.pdf`, `fig5_normality.pdf` | Funnel plot, PET-PEESE scatter, t-stat distribution, normality figure. |
 | `04_cn_simulation.py` | Python | `data/Returns_to_education.dta` | `output/figures/fig6_simulation.pdf`, `output/cn_simulation_results.json` | Simulation showing CN's normal-fitting procedure is biased toward zero; comparison of CN fit vs MLE normal and log-normal. |
@@ -140,7 +140,6 @@ Stata's `-b` (batch) flag writes a log named `blog-other-methods-stata.log` to t
 | In-text: multiple-bias 5.2% (η≈2), sensitivity curve | `06_maive_rtma.R` | `output/maive_rtma_results.json` |
 | In-text: RTMA worst-case ~2–4% | `06_maive_rtma.R` | `output/maive_rtma_results.json` |
 | In-text: RE I²=95.6% | `01_pub_bias_stata.do` | `output/stata_pub_bias_summary.csv` |
-| In-text: Shapiro-Wilk p<0.001 | `01_pub_bias_stata.do` | `output/stata_pub_bias_summary.log` |
 
 ---
 

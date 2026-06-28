@@ -9,7 +9,6 @@
 * - PET / PEESE
 * - Trim-and-fill (Stata meta trimfill)
 * - Caliper bunching checks around t = 1.96
-* - Normality and skewness diagnostics
 *
 * Comparison notes vs Clark/Nielsen do-file:
 * - Their publication-bias regressions are in Returns_to_education.do
@@ -18,7 +17,7 @@
 *     (a) blog-spec (full sample, weighted PET/PEESE)
 *     (b) Clark/Nielsen PET/PEESE spec (SE < 10.1, weighted)
 * - This script also adds formal tests not in that do-file:
-*     trim-and-fill, caliper binomial tests, Shapiro-Wilk/skewness tests.
+*     trim-and-fill, caliper binomial tests.
 ********************************************************************************
 
 version 16.0
@@ -344,7 +343,6 @@ display "Difference (blog - Clark/Nielsen PEESE): " %9.3f `peese_diff'
 display _newline(1) "Additional methods in this script not in Clark/Nielsen do-file:"
 display "- meta trimfill"
 display "- caliper binomial tests (bitesti)"
-display "- swilk and sktest distribution diagnostics"
 
 local tf_theta = .
 local tf_se    = .
@@ -423,12 +421,6 @@ display "Bandwidth 1.0, just above: " `above_10' "  just below: " `below_10'
 if `total_10' > 0 {
     bitesti `total_10' `above_10' 0.5
 }
-
-display _newline(1) "============================================================"
-display "Distribution diagnostics"
-display "============================================================"
-swilk effect
-sktest effect
 
 display _newline(1) "============================================================"
 display "Exporting summary table for regression-based methods"
